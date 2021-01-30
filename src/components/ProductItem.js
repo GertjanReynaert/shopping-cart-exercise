@@ -1,6 +1,9 @@
-import ProductCounter from './ProductCounter';
+import React from "react";
+import ProductCounter from "./ProductCounter";
 
 const ProductItem = ({ item, totalPrice }) => {
+  const [count, setState] = React.useState(0);
+
   return (
     <li className="product row">
       <div className="col-product">
@@ -12,15 +15,16 @@ const ProductItem = ({ item, totalPrice }) => {
           </div>
         </figure>
       </div>
-      <ProductCounter />
+      <ProductCounter count={count} updateCount={setState} />
       <div className="col-price">
-        <span className="product-price">{item.price}</span><span className="product-currency currency">€</span>
+        <span className="product-price">{item.price}</span>
+        <span className="product-currency currency">€</span>
       </div>
       <div className="col-total">
         {/* <span className="product-price">{totalPrice}</span><span className="product-currency currency">€</span> */}
       </div>
     </li>
   );
-}
+};
 
 export default ProductItem;

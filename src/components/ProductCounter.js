@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 
-function ProductCounter() {
-  const [count, setState] = useState(0);
-
+function ProductCounter({ count, updateCount }) {
   function IncrementItem() {
-    setState(count + 1);
+    updateCount(count + 1);
   }
 
   function DecreaseItem() {
     if (count) {
-      setState(count - 1);
+      updateCount(count - 1);
     }
   }
 
