@@ -11,21 +11,24 @@ const ProductList = [
     name: "Shirt",
     photo: shirtImg,
     price: 20,
-    allowBulkDiscount: true
+    allowBulkDiscount: true,
+    allowTwoForOneDiscount: false
   },
   {
     code: "X2G2OPZ",
     name: "Mug",
     photo: mugImg,
     price: 7.5,
-    allowBulkDiscount: false
+    allowBulkDiscount: false,
+    allowTwoForOneDiscount: true
   },
   {
     code: "X3W2OPY",
     name: "Cap",
     photo: capImg,
     price: 5,
-    allowBulkDiscount: false
+    allowBulkDiscount: false,
+    allowTwoForOneDiscount: false
   }
 ];
 
@@ -54,8 +57,28 @@ function App() {
     0
   );
 
+  const calculateTwoForOneDiscount = (product, amount) => {
+    if (amount < 3) return 0;
+
+    return ((amount - (amount % 3)) / 3) * product.price * -1;
+  };
+
   const calculateBulkDiscount = (product, amount) =>
     amount >= 3 ? amount * (product.price * 0.05) * -1 : 0;
+
+  const twoForOneDiscounts = cart
+    .map((row) => {
+      if (row.product.allowTwoForOneDiscount) {
+        const discount = calculateTwoForOneDiscount(row.product, row.amount);
+
+        if (discount === 0) return null;
+
+        return { product: row.product, discount };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
 
   const bulkDiscounts = cart
     .map((row) => {
@@ -73,12 +96,14 @@ function App() {
 
   const totalCost =
     totalItemPrice +
+    twoForOneDiscounts.reduce(
+      (totalDiscount, discountItem) => totalDiscount + discountItem.discount,
+      0
+    ) +
     bulkDiscounts.reduce(
       (totalDiscount, discountItem) => totalDiscount + discountItem.discount,
       0
     );
-
-  console.log(totalCost);
 
   return (
     <main className="App">
@@ -119,12 +144,14 @@ function App() {
         <div className="summary-discounts wrapper-half border">
           <h2>Discounts</h2>
           <ul>
-            <li>
-              <span>2x1 Mug offer</span>
-              <span>-10€</span>
-            </li>
+            {twoForOneDiscounts.map((discountItem) => (
+              <li key={`twoForOne-${discountItem.product.code}`}>
+                <span>2x1 {discountItem.product.name} offer </span>
+                <span>{discountItem.discount}€</span>
+              </li>
+            ))}
             {bulkDiscounts.map((discountItem) => (
-              <li>
+              <li key={`bulk-${discountItem.product.code}`}>
                 <span>x3 {discountItem.product.name} offer</span>
                 <span>{discountItem.discount}€</span>
               </li>
