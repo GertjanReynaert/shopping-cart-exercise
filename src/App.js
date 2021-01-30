@@ -41,6 +41,16 @@ function App() {
     );
   };
 
+  const totalItems = cart.reduce(
+    (totalCount, row) => totalCount + row.amount,
+    0
+  );
+
+  const totalItemPrice = cart.reduce(
+    (totalCount, row) => totalCount + row.product.price * row.amount,
+    0
+  );
+
   return (
     <main className="App">
       <section className="products">
@@ -70,9 +80,10 @@ function App() {
         <h1 className="main">Order Summary</h1>
         <ul className="summary-items wrapper border">
           <li>
-            <span className="summary-items-number">11 Items</span>
+            <span className="summary-items-number">{totalItems} Items</span>
             <span className="summary-items-price">
-              120<span className="currency">€</span>
+              {totalItemPrice}
+              <span className="currency">€</span>
             </span>
           </li>
         </ul>
