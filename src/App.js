@@ -57,50 +57,47 @@ function App() {
     0
   );
 
-  const calculateTwoForOneDiscount = (product, amount) => {
-    if (amount < 3) return 0;
+  const pricingRules = [
+    {
+      ruleType: "twoForOne",
+      calculateDiscount: (product, amount) => {
+        if (product.allowTwoForOneDiscount === false) return 0;
+        if (amount < 3) return 0;
 
-    return ((amount - (amount % 3)) / 3) * product.price * -1;
-  };
+        return ((amount - (amount % 3)) / 3) * product.price * -1;
+      },
+      printPresentationText: (product) => `2x1 ${product.name} offer`
+    },
+    {
+      ruleType: "bulk",
+      calculateDiscount: (product, amount) => {
+        if (product.allowBulkDiscount === false) return 0;
+        if (amount < 3) return 0;
 
-  const calculateBulkDiscount = (product, amount) =>
-    amount >= 3 ? amount * (product.price * 0.05) * -1 : 0;
+        return amount * (product.price * 0.05) * -1;
+      },
+      printPresentationText: (product) => `x3 ${product.name} offer`
+    }
+  ];
 
-  const twoForOneDiscounts = cart
-    .map((row) => {
-      if (row.product.allowTwoForOneDiscount) {
-        const discount = calculateTwoForOneDiscount(row.product, row.amount);
-
-        if (discount === 0) return null;
-
-        return { product: row.product, discount };
-      }
-
-      return null;
-    })
-    .filter(Boolean);
-
-  const bulkDiscounts = cart
-    .map((row) => {
-      if (row.product.allowBulkDiscount) {
-        const discount = calculateBulkDiscount(row.product, row.amount);
-
-        if (discount === 0) return null;
-
-        return { product: row.product, discount };
-      }
-
-      return null;
-    })
-    .filter(Boolean);
+  const discounts = pricingRules
+    .map((rule) =>
+      cart.map((row) => ({
+        id: `${rule.ruleType}-${row.product.code}`,
+        presentationText: rule.printPresentationText(row.product),
+        discount: rule.calculateDiscount(row.product, row.amount)
+      }))
+    )
+    .reduce(
+      //FlatMap
+      (discounts, discountsForRules) => [...discounts, ...discountsForRules],
+      []
+    )
+    .filter((discount) => discount.discount !== 0);
 
   const totalCost =
     totalItemPrice +
-    twoForOneDiscounts.reduce(
-      (totalDiscount, discountItem) => totalDiscount + discountItem.discount,
-      0
-    ) +
-    bulkDiscounts.reduce(
+    discounts.reduce(
       (totalDiscount, discountItem) => totalDiscount + discountItem.discount,
       0
     );
@@ -144,15 +141,9 @@ function App() {
         <div className="summary-discounts wrapper-half border">
           <h2>Discounts</h2>
           <ul>
-            {twoForOneDiscounts.map((discountItem) => (
-              <li key={`twoForOne-${discountItem.product.code}`}>
-                <span>2x1 {discountItem.product.name} offer </span>
-                <span>{discountItem.discount}€</span>
-              </li>
-            ))}
-            {bulkDiscounts.map((discountItem) => (
-              <li key={`bulk-${discountItem.product.code}`}>
-                <span>x3 {discountItem.product.name} offer</span>
+            {discounts.map((discountItem) => (
+              <li key={discountItem.id}>
+                <span>{discountItem.presentationText}</span>
                 <span>{discountItem.discount}€</span>
               </li>
             ))}
