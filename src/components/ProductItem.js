@@ -1,8 +1,9 @@
 import React from "react";
 import ProductCounter from "./ProductCounter";
 
-const ProductItem = ({ item, totalPrice }) => {
+const ProductItem = ({ item }) => {
   const [count, setState] = React.useState(0);
+  const totalPrice = count * item.price;
 
   return (
     <li className="product row">
@@ -21,7 +22,8 @@ const ProductItem = ({ item, totalPrice }) => {
         <span className="product-currency currency">€</span>
       </div>
       <div className="col-total">
-        {/* <span className="product-price">{totalPrice}</span><span className="product-currency currency">€</span> */}
+        <span className="product-price">{totalPrice}</span>
+        <span className="product-currency currency">€</span>
       </div>
     </li>
   );

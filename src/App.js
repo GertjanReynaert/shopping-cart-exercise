@@ -1,31 +1,36 @@
-import ProductItem from './components/ProductItem';
+import React from "react";
+import ProductItem from "./components/ProductItem";
 
-import shirtImg  from './img/shirt.png';
-import mugImg  from './img/mug.png';
-import capImg from './img/cap.png';
+import shirtImg from "./img/shirt.png";
+import mugImg from "./img/mug.png";
+import capImg from "./img/cap.png";
 
 const ProductList = [
   {
-    code: 'X7R2OPX',
-    name: 'Shirt',
+    code: "X7R2OPX",
+    name: "Shirt",
     photo: shirtImg,
-    price: '20',
+    price: 20
   },
   {
-    code: 'X2G2OPZ',
-    name: 'Mug',
+    code: "X2G2OPZ",
+    name: "Mug",
     photo: mugImg,
-    price: '5',
+    price: 7.5
   },
   {
-    code: 'X3W2OPY',
-    name: 'Cap',
+    code: "X3W2OPY",
+    name: "Cap",
     photo: capImg,
-    price: '10',
-  },
+    price: 5
+  }
 ];
 
 function App() {
+  const [cart, updateCart] = React.useState(
+    ProductList.map((product) => ({ product, amount: 0 }))
+  );
+
   return (
     <main className="App">
       <section className="products">
@@ -39,37 +44,43 @@ function App() {
           </li>
         </ul>
         <ul className="products-list">
-        {ProductList.map(item => (
-          <ProductItem
-            key={item.code}
-            item={item}
-          />
-        ))}
+          {cart.map((row) => (
+            <ProductItem key={row.product.code} item={row.product} />
+          ))}
         </ul>
       </section>
       <aside className="summary">
         <h1 className="main">Order Summary</h1>
         <ul className="summary-items wrapper border">
           <li>
-            <span className="summary-items-number">11 Items</span
-            ><span className="summary-items-price"
-              >120<span className="currency">€</span></span
-            >
+            <span className="summary-items-number">11 Items</span>
+            <span className="summary-items-price">
+              120<span className="currency">€</span>
+            </span>
           </li>
         </ul>
         <div className="summary-discounts wrapper-half border">
           <h2>Discounts</h2>
           <ul>
-            <li><span>2x1 Mug offer</span><span>-10€</span></li>
-            <li><span>x3 Shirt offer</span><span>-3€</span></li>
-            <li><span>Promo code</span><span>0€</span></li>
+            <li>
+              <span>2x1 Mug offer</span>
+              <span>-10€</span>
+            </li>
+            <li>
+              <span>x3 Shirt offer</span>
+              <span>-3€</span>
+            </li>
+            <li>
+              <span>Promo code</span>
+              <span>0€</span>
+            </li>
           </ul>
         </div>
         <div className="summary-total wrapper">
           <ul>
             <li>
-              <span className="summary-total-cost">Total cost</span
-              ><span className="summary-total-price">107€</span>
+              <span className="summary-total-cost">Total cost</span>
+              <span className="summary-total-price">107€</span>
             </li>
           </ul>
           <button type="submit">Checkout</button>
