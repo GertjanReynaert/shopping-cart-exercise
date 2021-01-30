@@ -64,10 +64,7 @@ function App() {
 
         if (discount === 0) return null;
 
-        return {
-          product: row.product,
-          discount
-        };
+        return { product: row.product, discount };
       }
 
       return null;
