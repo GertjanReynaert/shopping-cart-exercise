@@ -71,6 +71,15 @@ function App() {
     })
     .filter(Boolean);
 
+  const totalCost =
+    totalItemPrice +
+    bulkDiscounts.reduce(
+      (totalDiscount, discountItem) => totalDiscount + discountItem.discount,
+      0
+    );
+
+  console.log(totalCost);
+
   return (
     <main className="App">
       <section className="products">
@@ -120,7 +129,6 @@ function App() {
                 <span>{discountItem.discount}€</span>
               </li>
             ))}
-
             <li>
               <span>Promo code</span>
               <span>0€</span>
@@ -131,7 +139,7 @@ function App() {
           <ul>
             <li>
               <span className="summary-total-cost">Total cost</span>
-              <span className="summary-total-price">107€</span>
+              <span className="summary-total-price">{totalCost}€</span>
             </li>
           </ul>
           <button type="submit">Checkout</button>
