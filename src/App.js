@@ -51,6 +51,14 @@ function App() {
     0
   );
 
+  const calculateBulkDiscount = (product, amount) =>
+    amount >= 3 ? amount * (product.price * 0.05) * -1 : 0;
+
+  const shirtsInCart = cart.find((row) => row.product.code === "X7R2OPX");
+  const shirtDiscount = shirtsInCart
+    ? calculateBulkDiscount(shirtsInCart.product, shirtsInCart.amount)
+    : 0;
+
   return (
     <main className="App">
       <section className="products">
@@ -94,10 +102,13 @@ function App() {
               <span>2x1 Mug offer</span>
               <span>-10€</span>
             </li>
-            <li>
-              <span>x3 Shirt offer</span>
-              <span>-3€</span>
-            </li>
+            {shirtDiscount !== 0 ? (
+              <li>
+                <span>x3 Shirt offer</span>
+                <span>{shirtDiscount}€</span>
+              </li>
+            ) : null}
+
             <li>
               <span>Promo code</span>
               <span>0€</span>
