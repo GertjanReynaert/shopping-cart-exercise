@@ -1,8 +1,7 @@
 import React from "react";
 import ProductCounter from "./ProductCounter";
 
-const ProductItem = ({ item }) => {
-  const [count, setState] = React.useState(0);
+const ProductItem = ({ item, count, updateCount }) => {
   const totalPrice = count * item.price;
 
   return (
@@ -16,7 +15,7 @@ const ProductItem = ({ item }) => {
           </div>
         </figure>
       </div>
-      <ProductCounter count={count} updateCount={setState} />
+      <ProductCounter count={count} updateCount={updateCount} />
       <div className="col-price">
         <span className="product-price">{item.price}</span>
         <span className="product-currency currency">€</span>

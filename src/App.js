@@ -31,6 +31,16 @@ function App() {
     ProductList.map((product) => ({ product, amount: 0 }))
   );
 
+  const updateAmount = (productCode, newAmount) => {
+    updateCart(
+      cart.map((row) =>
+        row.product.code === productCode
+          ? { product: row.product, amount: newAmount }
+          : row
+      )
+    );
+  };
+
   return (
     <main className="App">
       <section className="products">
@@ -45,7 +55,14 @@ function App() {
         </ul>
         <ul className="products-list">
           {cart.map((row) => (
-            <ProductItem key={row.product.code} item={row.product} />
+            <ProductItem
+              key={row.product.code}
+              item={row.product}
+              count={row.amount}
+              updateCount={(newAmount) =>
+                updateAmount(row.product.code, newAmount)
+              }
+            />
           ))}
         </ul>
       </section>
