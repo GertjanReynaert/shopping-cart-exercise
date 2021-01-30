@@ -10,19 +10,22 @@ const ProductList = [
     code: "X7R2OPX",
     name: "Shirt",
     photo: shirtImg,
-    price: 20
+    price: 20,
+    allowBulkDiscount: true
   },
   {
     code: "X2G2OPZ",
     name: "Mug",
     photo: mugImg,
-    price: 7.5
+    price: 7.5,
+    allowBulkDiscount: false
   },
   {
     code: "X3W2OPY",
     name: "Cap",
     photo: capImg,
-    price: 5
+    price: 5,
+    allowBulkDiscount: false
   }
 ];
 
@@ -54,10 +57,22 @@ function App() {
   const calculateBulkDiscount = (product, amount) =>
     amount >= 3 ? amount * (product.price * 0.05) * -1 : 0;
 
-  const shirtsInCart = cart.find((row) => row.product.code === "X7R2OPX");
-  const shirtDiscount = shirtsInCart
-    ? calculateBulkDiscount(shirtsInCart.product, shirtsInCart.amount)
-    : 0;
+  const bulkDiscounts = cart
+    .map((row) => {
+      if (row.product.allowBulkDiscount) {
+        const discount = calculateBulkDiscount(row.product, row.amount);
+
+        if (discount === 0) return null;
+
+        return {
+          product: row.product,
+          discount
+        };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
 
   return (
     <main className="App">
@@ -102,12 +117,12 @@ function App() {
               <span>2x1 Mug offer</span>
               <span>-10€</span>
             </li>
-            {shirtDiscount !== 0 ? (
+            {bulkDiscounts.map((discountItem) => (
               <li>
-                <span>x3 Shirt offer</span>
-                <span>{shirtDiscount}€</span>
+                <span>x3 {discountItem.product.name} offer</span>
+                <span>{discountItem.discount}€</span>
               </li>
-            ) : null}
+            ))}
 
             <li>
               <span>Promo code</span>
